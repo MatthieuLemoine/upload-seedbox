@@ -1,0 +1,6 @@
+node_modules
+.env
+db.json
+.esm-cache
+*.log
+tvShows.json
