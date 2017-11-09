@@ -9,7 +9,10 @@ const Authorization = `Basic ${toBase64(`${process.env.USERNAME}:${process.env.P
 export default upload;
 
 async function upload(filePath) {
-  const name = path.parse(filePath).base;
+  const { base: name, ext } = path.parse(filePath);
+  if (ext !== '.torrent') {
+    return;
+  }
   try {
     const sessionId = await getSessionId();
     const torrent = await getTorrent(filePath);
@@ -19,7 +22,7 @@ async function upload(filePath) {
       method: 'POST',
       headers: {
         Authorization,
-        Referer: 'https://u2.seedbox.fr/v/seedbox59dc9c18cddf3/web/',
+        Referer: `https://u2.seedbox.fr/v/${process.env.SEEDBOX}/web/`,
         'User-Agent':
           'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/61.0.3163.100 Chrome/61.0.3163.100 Safari/537.36',
         'X-Requested-With': 'XMLHttpRequest',
@@ -55,7 +58,7 @@ function getSessionId() {
     method: 'POST',
     headers: {
       Authorization,
-      Referer: 'https://u2.seedbox.fr/v/seedbox59dc9c18cddf3/web/',
+      Referer: `https://u2.seedbox.fr/v/${process.env.SEEDBOX}/web/`,
     },
     resolveWithFullResponse: true,
   })
